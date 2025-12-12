@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coin Flipper Game</title>
+    <title>Visual Novel: Echoes of Tomorrow</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,316 +14,496 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background-color: #0a0a14;
             color: #fff;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 90vh;
+            background-color: #0f0f1a;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
         
         header {
-            text-align: center;
-            margin-bottom: 30px;
+            background: linear-gradient(90deg, #1a1a2e, #16213e);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d2d4a;
         }
         
-        h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(90deg, #ffd166, #ff9e6d);
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff6b9d, #6a9eff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(255, 209, 102, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .subtitle {
-            font-size: 1.1rem;
+        .game-info {
+            display: flex;
+            gap: 20px;
             color: #a0a0c0;
-            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .game-area {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
+            flex: 1;
+            overflow: hidden;
         }
         
-        .coin-container {
-            perspective: 1000px;
-            width: 250px;
-            height: 250px;
-            margin: 0 auto 20px;
-        }
-        
-        .coin {
-            width: 100%;
-            height: 100%;
+        .scene-container {
+            flex: 3;
+            background-color: #070710;
             position: relative;
-            transform-style: preserve-3d;
-            transition: transform 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
         }
         
-        .coin.flipping {
-            animation: flip 2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        @keyframes flip {
-            0% { transform: rotateY(0); }
-            50% { transform: rotateY(1800deg); }
-            100% { transform: rotateY(2160deg); }
-        }
-        
-        .coin-side {
-            position: absolute;
+        .scene-bg {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            backface-visibility: hidden;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: opacity 0.5s ease;
+        }
+        
+        .character {
+            position: absolute;
+            bottom: 0;
+            height: 85%;
+            transition: all 0.5s ease;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+        }
+        
+        .char-left {
+            left: 5%;
+        }
+        
+        .char-right {
+            right: 5%;
+        }
+        
+        .char-center {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dialogue-container {
+            flex: 2;
+            background-color: rgba(15, 15, 26, 0.95);
+            border-left: 2px solid #2d2d4a;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 5rem;
+            flex-direction: column;
+            padding: 25px;
+            position: relative;
+            min-width: 350px;
+        }
+        
+        .character-name {
+            font-size: 1.8rem;
             font-weight: bold;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 15px;
+            color: #ffd166;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3a3a5e;
+            min-height: 50px;
         }
         
-        .heads {
-            background: radial-gradient(circle, #ffd166, #d4a800);
-            color: #8a6d00;
-            transform: rotateY(0deg);
-            border: 15px solid #ffc145;
+        .dialogue-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            flex: 1;
+            padding: 15px;
+            background-color: rgba(30, 30, 46, 0.7);
+            border-radius: 10px;
+            border: 1px solid #3a3a5e;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            min-height: 200px;
         }
         
-        .tails {
-            background: radial-gradient(circle, #6a9eff, #2a4da3);
-            color: #1a2c5e;
-            transform: rotateY(180deg);
-            border: 15px solid #5a8eff;
+        .dialogue-text.typing {
+            font-family: 'Courier New', monospace;
         }
         
-        .controls {
+        .choices-container {
             display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
             margin-top: 10px;
         }
         
-        button {
-            padding: 16px 30px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 12px;
+        .choice-btn {
+            padding: 16px 20px;
+            background-color: rgba(58, 58, 94, 0.7);
+            border: 2px solid #4d4d7a;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.1rem;
+            text-align: left;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        .choice-btn:hover {
+            background-color: rgba(106, 158, 255, 0.2);
+            border-color: #6a9eff;
+            transform: translateY(-3px);
         }
         
-        button:active {
+        .choice-btn:active {
             transform: translateY(0);
         }
         
-        .flip-btn {
-            background: linear-gradient(90deg, #ff9e6d, #ff6b9d);
-            color: white;
-        }
-        
-        .heads-btn {
-            background: linear-gradient(90deg, #ffd166, #ffb347);
-            color: #5a4200;
-        }
-        
-        .tails-btn {
-            background: linear-gradient(90deg, #6a9eff, #4d7dff);
-            color: white;
-        }
-        
-        .reset-btn {
-            background: linear-gradient(90deg, #a0a0c0, #7a7aa0);
-            color: white;
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-            width: 100%;
-        }
-        
-        .stat-box {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-box:hover {
-            transform: translateY(-5px);
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-        
-        .stat-value {
-            font-size: 3rem;
-            font-weight: bold;
-            margin: 10px 0;
+        .choice-btn i {
             color: #ffd166;
-        }
-        
-        .stat-label {
-            font-size: 1.1rem;
-            color: #a0a0c0;
-        }
-        
-        .result-message {
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-align: center;
-            min-height: 60px;
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.1);
-            transition: all 0.5s ease;
-        }
-        
-        .win {
-            color: #4cff8f;
-            text-shadow: 0 0 10px rgba(76, 255, 143, 0.5);
-            background-color: rgba(76, 255, 143, 0.1);
-        }
-        
-        .lose {
-            color: #ff6b6b;
-            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
-            background-color: rgba(255, 107, 107, 0.1);
-        }
-        
-        .history {
-            margin-top: 30px;
-            width: 100%;
-        }
-        
-        .history h3 {
-            margin-bottom: 15px;
-            color: #ffd166;
-            font-size: 1.5rem;
-        }
-        
-        .history-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            max-height: 120px;
-            overflow-y: auto;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-        }
-        
-        .history-item {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
             font-size: 1.2rem;
         }
         
-        .history-heads {
-            background-color: rgba(255, 209, 102, 0.3);
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #3a3a5e;
+        }
+        
+        .control-btn {
+            padding: 12px 20px;
+            background-color: #2d2d4a;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .control-btn:hover {
+            background-color: #3a3a5e;
+            transform: translateY(-2px);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0);
+        }
+        
+        .save-btn {
+            background-color: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4caf50;
+        }
+        
+        .load-btn {
+            background-color: rgba(33, 150, 243, 0.3);
+            border: 1px solid #2196f3;
+        }
+        
+        .skip-btn {
+            background-color: rgba(255, 193, 7, 0.3);
+            border: 1px solid #ffc107;
+        }
+        
+        .auto-btn {
+            background-color: rgba(156, 39, 176, 0.3);
+            border: 1px solid #9c27b0;
+        }
+        
+        .auto-btn.active {
+            background-color: rgba(156, 39, 176, 0.7);
+        }
+        
+        .history-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 10, 20, 0.95);
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+            z-index: 10;
+        }
+        
+        .history-panel.active {
+            transform: translateX(0);
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3a3a5e;
+        }
+        
+        .history-title {
+            font-size: 1.8rem;
             color: #ffd166;
         }
         
-        .history-tails {
-            background-color: rgba(106, 158, 255, 0.3);
-            color: #6a9eff;
+        .close-history {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
         
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #a0a0c0;
+        .history-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: rgba(30, 30, 46, 0.7);
+            border-radius: 8px;
+            border-left: 4px solid #6a9eff;
+        }
+        
+        .history-char {
+            font-weight: bold;
+            color: #ffd166;
+            margin-bottom: 5px;
+        }
+        
+        .history-text {
+            color: #d0d0e0;
+        }
+        
+        .notification {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: rgba(30, 30, 46, 0.9);
+            border-radius: 8px;
+            border-left: 5px solid #4caf50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 20;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .save-slots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 10, 20, 0.95);
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            z-index: 10;
+        }
+        
+        .save-slots.active {
+            transform: translateY(0);
+        }
+        
+        .save-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3a3a5e;
+        }
+        
+        .save-title {
+            font-size: 1.8rem;
+            color: #ffd166;
+        }
+        
+        .close-save {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .slot-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .slot {
+            padding: 20px;
+            background-color: rgba(30, 30, 46, 0.7);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #3a3a5e;
+        }
+        
+        .slot:hover {
+            background-color: rgba(58, 58, 94, 0.7);
+            border-color: #6a9eff;
+        }
+        
+        .slot-date {
             font-size: 0.9rem;
+            color: #a0a0c0;
+            margin-bottom: 10px;
+        }
+        
+        .slot-preview {
+            font-size: 1rem;
+            color: #d0d0e0;
+            margin-bottom: 15px;
+            height: 60px;
+            overflow: hidden;
+        }
+        
+        .slot-btn {
+            padding: 8px 15px;
+            background-color: #2d2d4a;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .slot-btn:hover {
+            background-color: #3a3a5e;
+        }
+        
+        .empty-slot {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+            color: #6a6a8a;
+        }
+        
+        .empty-slot i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.3rem;
+            background-color: #ffd166;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @media (max-width: 1024px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .dialogue-container {
+                min-height: 40vh;
+                border-left: none;
+                border-top: 2px solid #2d2d4a;
+            }
+            
+            .character {
+                height: 70%;
+            }
         }
         
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                height: 95vh;
             }
             
-            h1 {
-                font-size: 2.2rem;
+            header {
+                padding: 10px 15px;
             }
             
-            .coin-container {
-                width: 200px;
-                height: 200px;
+            .logo {
+                font-size: 1.4rem;
             }
             
-            .coin-side {
-                font-size: 4rem;
+            .game-info {
+                font-size: 0.8rem;
+                gap: 10px;
+            }
+            
+            .dialogue-container {
+                padding: 15px;
+                min-width: unset;
+            }
+            
+            .character-name {
+                font-size: 1.5rem;
+            }
+            
+            .dialogue-text {
+                font-size: 1.1rem;
+            }
+            
+            .choice-btn {
+                padding: 12px 15px;
+                font-size: 1rem;
             }
             
             .controls {
-                flex-direction: column;
-                align-items: center;
+                flex-wrap: wrap;
             }
             
-            button {
-                width: 100%;
-                max-width: 300px;
+            .control-btn {
+                padding: 10px;
+                font-size: 0.9rem;
             }
             
-            .stats {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .coin-container {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .coin-side {
-                font-size: 3.5rem;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
+            .character {
+                height: 60%;
             }
         }
     </style>
@@ -331,263 +511,689 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-coins"></i> Coin Flipper</h1>
-            <p class="subtitle">Flip a virtual coin and test your luck! Choose heads or tails, or just flip for fun.</p>
+            <div class="logo">
+                <i class="fas fa-book-open"></i> Echoes of Tomorrow
+            </div>
+            <div class="game-info">
+                <div class="info-item">
+                    <i class="fas fa-clock"></i> 
+                    <span id="gameTime">Chapter 1</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-save"></i> 
+                    <span id="saveCount">Auto-save ON</span>
+                </div>
+            </div>
         </header>
         
-        <main class="game-area">
-            <div class="coin-container">
-                <div class="coin" id="coin">
-                    <div class="coin-side heads">H</div>
-                    <div class="coin-side tails">T</div>
-                </div>
+        <div class="game-area">
+            <div class="scene-container">
+                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" class="scene-bg" id="sceneBg">
+                
+                <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" class="character char-left" id="charLeft" style="display: none;">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" class="character char-center" id="charCenter" style="display: none;">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" class="character char-right" id="charRight" style="display: none;">
             </div>
             
-            <div class="result-message" id="resultMessage">
-                Click "Flip Coin" to start!
-            </div>
-            
-            <div class="controls">
-                <button class="flip-btn" id="flipBtn">
-                    <i class="fas fa-sync-alt"></i> Flip Coin
-                </button>
-                <button class="heads-btn" id="headsBtn">
-                    <i class="fas fa-crown"></i> Choose Heads
-                </button>
-                <button class="tails-btn" id="tailsBtn">
-                    <i class="fas fa-feather-alt"></i> Choose Tails
-                </button>
-                <button class="reset-btn" id="resetBtn">
-                    <i class="fas fa-redo"></i> Reset Game
-                </button>
-            </div>
-            
-            <div class="stats">
-                <div class="stat-box">
-                    <div class="stat-label">Total Flips</div>
-                    <div class="stat-value" id="totalFlips">0</div>
+            <div class="dialogue-container">
+                <div class="character-name" id="characterName">Narrator</div>
+                <div class="dialogue-text" id="dialogueText">
+                    Welcome to "Echoes of Tomorrow," an interactive visual novel where your choices shape the story. Click "Continue" to begin your journey.
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">Heads</div>
-                    <div class="stat-value" id="headsCount">0</div>
+                
+                <div class="choices-container" id="choicesContainer">
+                    <!-- Choices will be dynamically inserted here -->
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">Tails</div>
-                    <div class="stat-value" id="tailsCount">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Win Rate</div>
-                    <div class="stat-value" id="winRate">0%</div>
+                
+                <div class="controls">
+                    <button class="control-btn save-btn" id="saveBtn">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="control-btn load-btn" id="loadBtn">
+                        <i class="fas fa-folder-open"></i> Load
+                    </button>
+                    <button class="control-btn skip-btn" id="skipBtn">
+                        <i class="fas fa-forward"></i> Skip
+                    </button>
+                    <button class="control-btn auto-btn" id="autoBtn">
+                        <i class="fas fa-robot"></i> Auto
+                    </button>
+                    <button class="control-btn" id="historyBtn">
+                        <i class="fas fa-history"></i> Log
+                    </button>
                 </div>
             </div>
-            
-            <div class="history">
-                <h3><i class="fas fa-history"></i> Flip History</h3>
-                <div class="history-list" id="historyList">
-                    <!-- History items will be added here -->
-                </div>
-            </div>
-        </main>
+        </div>
         
-        <footer>
-            <p>Coin Flipper Game &copy; 2023 | Made with <i class="fas fa-heart" style="color:#ff6b6b"></i></p>
-        </footer>
+        <!-- History Panel -->
+        <div class="history-panel" id="historyPanel">
+            <div class="history-header">
+                <div class="history-title">Dialogue History</div>
+                <button class="close-history" id="closeHistory">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="historyContent">
+                <!-- History items will be added here -->
+            </div>
+        </div>
+        
+        <!-- Save/Load Panel -->
+        <div class="save-slots" id="saveSlots">
+            <div class="save-header">
+                <div class="save-title">Save Slots</div>
+                <button class="close-save" id="closeSave">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="slot-container" id="slotContainer">
+                <!-- Save slots will be dynamically inserted here -->
+            </div>
+        </div>
+        
+        <!-- Notification -->
+        <div class="notification" id="notification">
+            Game saved successfully!
+        </div>
     </div>
 
     <script>
+        // Game data
+        const gameData = {
+            currentScene: "start",
+            chapter: 1,
+            variables: {
+                trustAlex: 0,
+                trustMaya: 0,
+                trustLeo: 0,
+                discoveredTruth: false,
+                path: "neutral"
+            },
+            sceneHistory: []
+        };
+
+        // Characters data
+        const characters = {
+            narrator: { name: "Narrator", color: "#6a9eff" },
+            alex: { name: "Alex Sterling", color: "#ff9e6d", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" },
+            maya: { name: "Maya Chen", color: "#ff6b9d", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" },
+            leo: { name: "Leo Vance", color: "#4cff8f", img: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" }
+        };
+
+        // Backgrounds
+        const backgrounds = {
+            lab: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            city: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            office: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            park: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+        };
+
+        // Game scenes (dialogue tree)
+        const scenes = {
+            start: {
+                background: backgrounds.city,
+                characters: [],
+                dialogue: [
+                    { character: "narrator", text: "The year is 2049. Neo-Tokyo is a city of contrasts, where gleaming skyscrapers tower over crowded streets filled with the neon glow of holographic advertisements." },
+                    { character: "narrator", text: "You are a neural engineer working for ChronoTech, a company at the forefront of memory manipulation technology. Lately, you've been having strange dreams that feel more like memories..." },
+                    { character: "narrator", text: "Today, you received an anonymous message: 'They're erasing more than memories. Meet me at the old clock tower at midnight. Come alone.'" },
+                    { character: "narrator", text: "What do you do?" }
+                ],
+                choices: [
+                    { text: "Ignore the message and go to work", nextScene: "work", effect: { trustAlex: -10 } },
+                    { text: "Investigate the message sender", nextScene: "investigate", effect: { trustMaya: 5 } },
+                    { text: "Tell your colleague Alex about it", nextScene: "tellAlex", effect: { trustAlex: 10 } }
+                ]
+            },
+            
+            work: {
+                background: backgrounds.lab,
+                characters: ["alex"],
+                dialogue: [
+                    { character: "alex", text: "Hey, you're late today. Everything alright?" },
+                    { character: "player", text: "Just a strange message. Probably a prank." },
+                    { character: "alex", text: "Messages from strangers in our line of work? Could be dangerous. You did right by coming here." },
+                    { character: "alex", text: "Anyway, we have a breakthrough on the M-31 project. The director wants to see us in her office." }
+                ],
+                choices: [
+                    { text: "Ask Alex about the ethical concerns", nextScene: "ethics", effect: { trustAlex: 5 } },
+                    { text: "Head to the director's office", nextScene: "director", effect: { trustAlex: 0 } },
+                    { text: "Check your messages again", nextScene: "checkMessages", effect: { trustMaya: 5 } }
+                ]
+            },
+            
+            tellAlex: {
+                background: backgrounds.lab,
+                characters: ["alex"],
+                dialogue: [
+                    { character: "alex", text: "An anonymous message? At the old clock tower? That's in the abandoned district." },
+                    { character: "alex", text: "Look, I know you're curious, but it could be a trap. The company has enemies." },
+                    { character: "alex", text: "But... if you're going, I'm coming with you. We've been friends too long for me to let you go alone." }
+                ],
+                choices: [
+                    { text: "Accept Alex's help", nextScene: "withAlex", effect: { trustAlex: 15 } },
+                    { text: "Go alone anyway", nextScene: "alone", effect: { trustAlex: -5 } },
+                    { text: "Forget about it and focus on work", nextScene: "work", effect: { trustAlex: 0 } }
+                ]
+            },
+            
+            withAlex: {
+                background: backgrounds.city,
+                characters: ["alex"],
+                dialogue: [
+                    { character: "alex", text: "The old clock tower... I haven't been here since we were kids. This place gives me the creeps." },
+                    { character: "narrator", text: "As you approach the tower, a figure steps out from the shadows. It's a woman with sharp eyes and a determined expression." },
+                    { character: "maya", text: "I'm glad you came. And you brought a friend. That's... unexpected." },
+                    { character: "maya", text: "My name is Maya. I work for the Cognitive Integrity Group. We're investigating ChronoTech's illegal memory operations." }
+                ],
+                choices: [
+                    { text: "What illegal operations?", nextScene: "mayaReveal", effect: { trustMaya: 10 } },
+                    { text: "This is a mistake, let's go Alex", nextScene: "leaveMaya", effect: { trustMaya: -10, trustAlex: 5 } },
+                    { text: "How do we know we can trust you?", nextScene: "trustMaya", effect: { trustMaya: 5 } }
+                ]
+            },
+            
+            mayaReveal: {
+                background: backgrounds.park,
+                characters: ["maya", "alex"],
+                dialogue: [
+                    { character: "maya", text: "ChronoTech isn't just removing traumatic memories from consenting patients. They're implanting false memories in politicians, erasing witnesses, and manipulating public opinion." },
+                    { character: "alex", text: "That's impossible! Our technology isn't that advanced yet." },
+                    { character: "maya", text: "Isn't it? What about Project Mnemosyne? The classified sub-level research?" },
+                    { character: "player", text: "I've heard rumors... but I thought they were just stories." },
+                    { character: "maya", text: "The stories are true. And you're both involved, whether you know it or not. Your memories have been altered too." }
+                ],
+                choices: [
+                    { text: "That's ridiculous, prove it!", nextScene: "mayaProof", effect: { trustMaya: 5 } },
+                    { text: "Alex, let's report her to security", nextScene: "reportMaya", effect: { trustMaya: -15, trustAlex: 10 } },
+                    { text: "If that's true, what do we do?", nextScene: "mayaPlan", effect: { trustMaya: 10, discoveredTruth: true } }
+                ]
+            },
+            
+            mayaPlan: {
+                background: backgrounds.park,
+                characters: ["maya"],
+                dialogue: [
+                    { character: "maya", text: "I need access to the main server room. There's evidence there that can expose everything." },
+                    { character: "maya", text: "But it's heavily guarded. Only senior staff like you two have access after hours." },
+                    { character: "maya", text: "Will you help me? Or will you protect the company that's been lying to you?" }
+                ],
+                choices: [
+                    { text: "I'll help you expose the truth", nextScene: "helpMaya", effect: { trustMaya: 15, path: "rebel" } },
+                    { text: "I need time to think", nextScene: "think", effect: { trustMaya: 5, path: "neutral" } },
+                    { text: "I'm loyal to ChronoTech", nextScene: "loyal", effect: { trustMaya: -15, path: "loyalist" } }
+                ]
+            },
+            
+            helpMaya: {
+                background: backgrounds.office,
+                characters: ["maya", "leo"],
+                dialogue: [
+                    { character: "narrator", text: "Three nights later, you meet Maya at the designated location. But someone else is there too..." },
+                    { character: "leo", text: "I thought I'd find you here, Maya. And you brought the engineer. How predictable." },
+                    { character: "maya", text: "Leo! You're supposed to be in Geneva!" },
+                    { character: "leo", text: "Plans change when I hear my best agent is going rogue. But I'm not here to stop you. I'm here to help." },
+                    { character: "leo", text: "Everything Maya told you is true. And it's worse than she knows. The director... she's my sister. And she's gone too far." }
+                ],
+                choices: [
+                    { text: "What's the real plan?", nextScene: "leoPlan", effect: { trustLeo: 10 } },
+                    { text: "This feels like a trap", nextScene: "trap", effect: { trustLeo: -5 } },
+                    { text: "I've changed my mind", nextScene: "changedMind", effect: { trustMaya: -10, trustLeo: -10 } }
+                ]
+            },
+            
+            leoPlan: {
+                background: backgrounds.office,
+                characters: ["leo", "maya"],
+                dialogue: [
+                    { character: "leo", text: "The director has scheduled a demonstration for the Board tomorrow. She's going to show how she can implant memories in a test subject." },
+                    { character: "leo", text: "What she won't tell them is that the subject is a political dissident. Once she has the Board's approval, she'll expand the program globally." },
+                    { character: "maya", text: "We have to stop the demonstration. But how?" },
+                    { character: "leo", text: "We sabotage the neural interface. Make it look like a technical failure. Then, while everyone's distracted, we download the evidence." },
+                    { character: "leo", text: "You're the only one with the expertise to do it without getting caught. Will you help us?" }
+                ],
+                choices: [
+                    { text: "I'll do it", nextScene: "finaleSabotage", effect: { trustLeo: 15, trustMaya: 15 } },
+                    { text: "There has to be another way", nextScene: "alternative", effect: { trustLeo: 5, trustMaya: 5 } },
+                    { text: "I can't betray the company", nextScene: "finaleLoyal", effect: { trustLeo: -20, trustMaya: -20 } }
+                ]
+            },
+            
+            finaleSabotage: {
+                background: backgrounds.lab,
+                characters: ["leo", "maya", "alex"],
+                dialogue: [
+                    { character: "narrator", text: "The next day, during the demonstration, you successfully sabotage the neural interface. The device malfunctions harmlessly, causing confusion among the Board members." },
+                    { character: "narrator", text: "While security deals with the situation, Maya and Leo download terabytes of incriminating data. Alex creates a distraction to cover your escape." },
+                    { character: "narrator", text: "Two weeks later, the evidence is published worldwide. ChronoTech is shut down, its executives arrested. Memory manipulation technology is placed under strict international oversight." },
+                    { character: "narrator", text: "You, Maya, Leo, and Alex form a new organization dedicated to ethical neural technology. The world is safer because of your courage." },
+                    { character: "narrator", text: "END OF CHAPTER 1 - THE REBEL PATH" }
+                ],
+                choices: [
+                    { text: "Play Again", nextScene: "start", effect: {} },
+                    { text: "View Statistics", nextScene: "stats", effect: {} }
+                ]
+            }
+        };
+
         // Game state
-        let totalFlips = 0;
-        let headsCount = 0;
-        let tailsCount = 0;
-        let wins = 0;
-        let userChoice = null;
-        let gameHistory = [];
-        
-        // DOM elements
-        const coin = document.getElementById('coin');
-        const resultMessage = document.getElementById('resultMessage');
-        const flipBtn = document.getElementById('flipBtn');
-        const headsBtn = document.getElementById('headsBtn');
-        const tailsBtn = document.getElementById('tailsBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const totalFlipsEl = document.getElementById('totalFlips');
-        const headsCountEl = document.getElementById('headsCount');
-        const tailsCountEl = document.getElementById('tailsCount');
-        const winRateEl = document.getElementById('winRate');
-        const historyList = document.getElementById('historyList');
-        
-        // Event listeners
-        flipBtn.addEventListener('click', flipCoin);
-        headsBtn.addEventListener('click', () => chooseSide('heads'));
-        tailsBtn.addEventListener('click', () => chooseSide('tails'));
-        resetBtn.addEventListener('click', resetGame);
-        
-        // Function to choose a side
-        function chooseSide(side) {
-            userChoice = side;
+        let currentSceneId = "start";
+        let isTyping = false;
+        let typingSpeed = 30; // milliseconds per character
+        let autoPlay = false;
+        let autoPlayTimeout;
+        let dialogueHistory = [];
+        let saves = JSON.parse(localStorage.getItem("visualNovelSaves")) || Array(6).fill(null);
+
+        // DOM Elements
+        const sceneBg = document.getElementById("sceneBg");
+        const charLeft = document.getElementById("charLeft");
+        const charCenter = document.getElementById("charCenter");
+        const charRight = document.getElementById("charRight");
+        const characterName = document.getElementById("characterName");
+        const dialogueText = document.getElementById("dialogueText");
+        const choicesContainer = document.getElementById("choicesContainer");
+        const historyPanel = document.getElementById("historyPanel");
+        const historyContent = document.getElementById("historyContent");
+        const saveSlots = document.getElementById("saveSlots");
+        const slotContainer = document.getElementById("slotContainer");
+        const notification = document.getElementById("notification");
+        const gameTime = document.getElementById("gameTime");
+        const saveCount = document.getElementById("saveCount");
+
+        // Buttons
+        const saveBtn = document.getElementById("saveBtn");
+        const loadBtn = document.getElementById("loadBtn");
+        const skipBtn = document.getElementById("skipBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const historyBtn = document.getElementById("historyBtn");
+        const closeHistory = document.getElementById("closeHistory");
+        const closeSave = document.getElementById("closeSave");
+
+        // Initialize game
+        function initGame() {
+            updateScene("start");
+            updateSaveDisplay();
             
-            // Update button states
-            headsBtn.style.opacity = side === 'heads' ? '1' : '0.6';
-            tailsBtn.style.opacity = side === 'tails' ? '1' : '0.6';
+            // Event listeners
+            saveBtn.addEventListener("click", showSaveSlots);
+            loadBtn.addEventListener("click", showLoadSlots);
+            skipBtn.addEventListener("click", skipDialogue);
+            autoBtn.addEventListener("click", toggleAutoPlay);
+            historyBtn.addEventListener("click", showHistory);
+            closeHistory.addEventListener("click", hideHistory);
+            closeSave.addEventListener("click", hideSaveSlots);
             
-            // Show selection message
-            resultMessage.textContent = `You selected ${side.toUpperCase()}. Now click "Flip Coin"!`;
-            resultMessage.className = 'result-message';
+            // Hide notification after clicking
+            notification.addEventListener("click", () => {
+                notification.classList.remove("show");
+            });
+            
+            // Update game info
+            updateGameInfo();
         }
-        
-        // Function to flip the coin
-        function flipCoin() {
-            // If no choice made, just flip for fun
-            if (!userChoice) {
-                resultMessage.textContent = "No choice selected. Flipping for fun!";
-                resultMessage.className = 'result-message';
+
+        // Update current scene
+        function updateScene(sceneId) {
+            currentSceneId = sceneId;
+            const scene = scenes[sceneId];
+            
+            if (!scene) {
+                console.error(`Scene ${sceneId} not found!`);
+                return;
             }
             
-            // Disable buttons during flip
-            flipBtn.disabled = true;
-            headsBtn.disabled = true;
-            tailsBtn.disabled = true;
+            // Update background
+            sceneBg.src = scene.background;
             
-            // Remove any previous flipping class
-            coin.classList.remove('flipping');
+            // Hide all characters first
+            [charLeft, charCenter, charRight].forEach(char => {
+                char.style.display = "none";
+                char.style.opacity = "0";
+            });
             
-            // Force reflow to restart animation
-            void coin.offsetWidth;
+            // Show characters for this scene
+            scene.characters.forEach((charId, index) => {
+                const char = characters[charId];
+                if (char && char.img) {
+                    let charElement;
+                    if (index === 0) charElement = charLeft;
+                    else if (index === 1) charElement = charCenter;
+                    else charElement = charRight;
+                    
+                    charElement.src = char.img;
+                    charElement.style.display = "block";
+                    setTimeout(() => {
+                        charElement.style.opacity = "1";
+                    }, 300);
+                }
+            });
             
-            // Add flipping class to start animation
-            coin.classList.add('flipping');
+            // Start dialogue
+            gameData.sceneHistory.push(sceneId);
+            startDialogue(scene.dialogue, scene.choices);
             
-            // Random result (true = heads, false = tails)
-            const isHeads = Math.random() >= 0.5;
-            const result = isHeads ? 'heads' : 'tails';
+            // Update game info
+            updateGameInfo();
+        }
+
+        // Start dialogue sequence
+        function startDialogue(dialogue, choices) {
+            dialogueHistory = [];
+            let dialogueIndex = 0;
             
-            // Calculate final rotation to show correct side
-            // We need extra rotations for animation, then land on correct side
-            const extraRotations = 5; // 5 extra full rotations for animation
-            const resultRotation = isHeads ? 0 : 180;
-            const totalRotation = (extraRotations * 360) + resultRotation;
-            
-            // Set the final transform
-            setTimeout(() => {
-                coin.style.transform = `rotateY(${totalRotation}deg)`;
-            }, 10);
-            
-            // Update game state after animation
-            setTimeout(() => {
-                // Update flip counts
-                totalFlips++;
-                if (isHeads) {
-                    headsCount++;
-                } else {
-                    tailsCount++;
+            function showNextDialogue() {
+                if (dialogueIndex >= dialogue.length) {
+                    showChoices(choices);
+                    return;
                 }
                 
-                // Check if user won
-                let userWon = false;
-                if (userChoice) {
-                    userWon = userChoice === result;
-                    if (userWon) wins++;
-                }
+                const dialogueItem = dialogue[dialogueIndex];
+                const char = characters[dialogueItem.character] || characters.narrator;
+                
+                // Add to history
+                dialogueHistory.push({
+                    character: char.name,
+                    text: dialogueItem.text,
+                    color: char.color
+                });
                 
                 // Update UI
-                updateStats();
-                addToHistory(result, userWon);
+                characterName.textContent = char.name;
+                characterName.style.color = char.color;
                 
-                // Show result message
-                if (userChoice) {
-                    if (userWon) {
-                        resultMessage.textContent = `You win! It's ${result.toUpperCase()}!`;
-                        resultMessage.className = 'result-message win';
+                // Type out the text
+                typeText(dialogueItem.text, () => {
+                    dialogueIndex++;
+                    
+                    if (autoPlay) {
+                        autoPlayTimeout = setTimeout(showNextDialogue, 2000);
                     } else {
-                        resultMessage.textContent = `You lose! It's ${result.toUpperCase()}!`;
-                        resultMessage.className = 'result-message lose';
+                        // Show "Continue" button for non-last dialogues
+                        if (dialogueIndex < dialogue.length) {
+                            showContinueButton(showNextDialogue);
+                        } else {
+                            showContinueButton(() => showChoices(choices));
+                        }
                     }
-                } else {
-                    resultMessage.textContent = `It's ${result.toUpperCase()}!`;
-                    resultMessage.className = 'result-message';
-                }
-                
-                // Re-enable buttons
-                flipBtn.disabled = false;
-                headsBtn.disabled = false;
-                tailsBtn.disabled = false;
-                
-                // Remove flipping class
-                coin.classList.remove('flipping');
-                
-            }, 2000); // Match animation duration
-        }
-        
-        // Function to update statistics
-        function updateStats() {
-            totalFlipsEl.textContent = totalFlips;
-            headsCountEl.textContent = headsCount;
-            tailsCountEl.textContent = tailsCount;
-            
-            // Calculate win rate
-            const winRate = totalFlips > 0 ? Math.round((wins / totalFlips) * 100) : 0;
-            winRateEl.textContent = `${winRate}%`;
-        }
-        
-        // Function to add result to history
-        function addToHistory(result, isWin) {
-            // Add to history array
-            gameHistory.unshift({
-                result: result,
-                isWin: isWin,
-                id: Date.now()
-            });
-            
-            // Keep only last 20 results
-            if (gameHistory.length > 20) {
-                gameHistory = gameHistory.slice(0, 20);
+                });
             }
             
-            // Update history UI
-            updateHistoryUI();
+            showNextDialogue();
         }
-        
-        // Function to update history UI
-        function updateHistoryUI() {
-            // Clear history list
-            historyList.innerHTML = '';
+
+        // Type text with typewriter effect
+        function typeText(text, onComplete) {
+            isTyping = true;
+            dialogueText.innerHTML = "";
+            dialogueText.classList.add("typing");
             
-            // Add history items
-            gameHistory.forEach(item => {
-                const historyItem = document.createElement('div');
-                historyItem.className = `history-item history-${item.result}`;
-                historyItem.textContent = item.result === 'heads' ? 'H' : 'T';
-                historyItem.title = `${item.result.toUpperCase()} - ${item.isWin ? 'Win' : 'Lose'}`;
-                historyList.appendChild(historyItem);
+            let charIndex = 0;
+            
+            function typeChar() {
+                if (charIndex < text.length) {
+                    dialogueText.innerHTML += text.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeChar, typingSpeed);
+                } else {
+                    isTyping = false;
+                    dialogueText.classList.remove("typing");
+                    dialogueText.innerHTML = text + '<span class="typing-cursor"></span>';
+                    onComplete();
+                }
+            }
+            
+            typeChar();
+        }
+
+        // Skip typing animation
+        function skipDialogue() {
+            if (isTyping) {
+                typingSpeed = 1;
+                setTimeout(() => {
+                    typingSpeed = 30;
+                }, 100);
+            }
+        }
+
+        // Show continue button
+        function showContinueButton(onClick) {
+            choicesContainer.innerHTML = "";
+            
+            const continueBtn = document.createElement("button");
+            continueBtn.className = "choice-btn";
+            continueBtn.innerHTML = '<i class="fas fa-arrow-right"></i> Continue';
+            continueBtn.addEventListener("click", onClick);
+            
+            choicesContainer.appendChild(continueBtn);
+        }
+
+        // Show choices
+        function showChoices(choices) {
+            choicesContainer.innerHTML = "";
+            
+            choices.forEach((choice, index) => {
+                const choiceBtn = document.createElement("button");
+                choiceBtn.className = "choice-btn";
+                choiceBtn.innerHTML = `<i class="fas fa-comment-alt"></i> ${choice.text}`;
+                
+                choiceBtn.addEventListener("click", () => {
+                    // Apply choice effects
+                    if (choice.effect) {
+                        Object.keys(choice.effect).forEach(key => {
+                            if (key in gameData.variables) {
+                                gameData.variables[key] += choice.effect[key];
+                            }
+                        });
+                    }
+                    
+                    // Go to next scene
+                    updateScene(choice.nextScene);
+                });
+                
+                choicesContainer.appendChild(choiceBtn);
             });
         }
-        
-        // Function to reset the game
-        function resetGame() {
-            // Reset game state
-            totalFlips = 0;
-            headsCount = 0;
-            tailsCount = 0;
-            wins = 0;
-            userChoice = null;
-            gameHistory = [];
+
+        // Toggle auto-play
+        function toggleAutoPlay() {
+            autoPlay = !autoPlay;
+            autoBtn.classList.toggle("active", autoPlay);
             
-            // Reset UI
-            coin.style.transform = 'rotateY(0deg)';
-            resultMessage.textContent = 'Game reset! Choose heads or tails and flip the coin.';
-            resultMessage.className = 'result-message';
-            
-            // Reset button states
-            headsBtn.style.opacity = '1';
-            tailsBtn.style.opacity = '1';
-            
-            // Update stats
-            updateStats();
-            updateHistoryUI();
+            if (autoPlay) {
+                // If we're at a choice screen, auto-play won't work
+                const scene = scenes[currentSceneId];
+                const currentDialogue = scene.dialogue;
+                const currentChoices = scene.choices;
+                
+                // Find current position in dialogue
+                // This is simplified - in a full implementation, you'd track position
+                autoBtn.innerHTML = '<i class="fas fa-pause"></i> Auto';
+                
+                // For now, just advance to next scene (first choice)
+                if (currentChoices && currentChoices.length > 0) {
+                    autoPlay = false;
+                    autoBtn.classList.remove("active");
+                    autoBtn.innerHTML = '<i class="fas fa-robot"></i> Auto';
+                    showNotification("Auto-play stopped at choice");
+                }
+            } else {
+                clearTimeout(autoPlayTimeout);
+                autoBtn.innerHTML = '<i class="fas fa-robot"></i> Auto';
+            }
         }
-        
-        // Initialize the game
-        updateStats();
+
+        // Show dialogue history
+        function showHistory() {
+            historyContent.innerHTML = "";
+            
+            dialogueHistory.forEach((item, index) => {
+                const historyItem = document.createElement("div");
+                historyItem.className = "history-item";
+                historyItem.innerHTML = `
+                    <div class="history-char" style="color: ${item.color}">${item.character}</div>
+                    <div class="history-text">${item.text}</div>
+                `;
+                historyContent.appendChild(historyItem);
+            });
+            
+            historyPanel.classList.add("active");
+            
+            // Scroll to bottom
+            setTimeout(() => {
+                historyContent.scrollTop = historyContent.scrollHeight;
+            }, 100);
+        }
+
+        // Hide dialogue history
+        function hideHistory() {
+            historyPanel.classList.remove("active");
+        }
+
+        // Show save slots
+        function showSaveSlots() {
+            updateSaveSlots();
+            saveSlots.classList.add("active");
+        }
+
+        // Show load slots
+        function showLoadSlots() {
+            updateSaveSlots();
+            saveSlots.classList.add("active");
+        }
+
+        // Hide save/load slots
+        function hideSaveSlots() {
+            saveSlots.classList.remove("active");
+        }
+
+        // Update save slots display
+        function updateSaveSlots() {
+            slotContainer.innerHTML = "";
+            
+            saves.forEach((save, index) => {
+                const slot = document.createElement("div");
+                slot.className = "slot";
+                
+                if (save) {
+                    const saveDate = new Date(save.timestamp);
+                    slot.innerHTML = `
+                        <div class="slot-date">Slot ${index + 1} - ${saveDate.toLocaleDateString()} ${saveDate.toLocaleTimeString()}</div>
+                        <div class="slot-preview">${save.sceneId} - ${save.variables.path} path</div>
+                        <div>
+                            <button class="slot-btn save-action" data-index="${index}">${saveBtn.textContent.includes("Save") ? "Save" : "Load"}</button>
+                            <button class="slot-btn delete-action" data-index="${index}">Delete</button>
+                        </div>
+                    `;
+                } else {
+                    slot.innerHTML = `
+                        <div class="empty-slot">
+                            <i class="far fa-save"></i>
+                            <div>Empty Slot ${index + 1}</div>
+                            <button class="slot-btn save-action" data-index="${index}" style="margin-top: 15px;">Save Here</button>
+                        </div>
+                    `;
+                }
+                
+                slotContainer.appendChild(slot);
+            });
+            
+            // Add event listeners to slot buttons
+            document.querySelectorAll(".save-action").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    if (saveBtn.textContent.includes("Save")) {
+                        saveGame(index);
+                    } else {
+                        loadGame(index);
+                    }
+                });
+            });
+            
+            document.querySelectorAll(".delete-action").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    deleteSave(index);
+                });
+            });
+        }
+
+        // Save game to slot
+        function saveGame(slotIndex) {
+            const saveData = {
+                sceneId: currentSceneId,
+                chapter: gameData.chapter,
+                variables: { ...gameData.variables },
+                sceneHistory: [...gameData.sceneHistory],
+                dialogueHistory: [...dialogueHistory],
+                timestamp: Date.now()
+            };
+            
+            saves[slotIndex] = saveData;
+            localStorage.setItem("visualNovelSaves", JSON.stringify(saves));
+            
+            showNotification("Game saved successfully!");
+            updateSaveSlots();
+            updateSaveDisplay();
+        }
+
+        // Load game from slot
+        function loadGame(slotIndex) {
+            const saveData = saves[slotIndex];
+            
+            if (!saveData) {
+                showNotification("No save data in this slot!");
+                return;
+            }
+            
+            currentSceneId = saveData.sceneId;
+            gameData.chapter = saveData.chapter;
+            gameData.variables = { ...saveData.variables };
+            gameData.sceneHistory = [...saveData.sceneHistory];
+            dialogueHistory = [...saveData.dialogueHistory];
+            
+            hideSaveSlots();
+            updateScene(currentSceneId);
+            showNotification("Game loaded successfully!");
+        }
+
+        // Delete save from slot
+        function deleteSave(slotIndex) {
+            saves[slotIndex] = null;
+            localStorage.setItem("visualNovelSaves", JSON.stringify(saves));
+            updateSaveSlots();
+            updateSaveDisplay();
+            showNotification("Save deleted!");
+        }
+
+        // Update save display info
+        function updateSaveDisplay() {
+            const saveCountValue = saves.filter(save => save !== null).length;
+            saveCount.textContent = `${saveCountValue}/6 Saves`;
+        }
+
+        // Update game info display
+        function updateGameInfo() {
+            gameTime.textContent = `Chapter ${gameData.chapter}`;
+            
+            // Update based on path
+            if (gameData.variables.path !== "neutral") {
+                gameTime.textContent += ` - ${gameData.variables.path.toUpperCase()} PATH`;
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add("show");
+            
+            setTimeout(() => {
+                notification.classList.remove("show");
+            }, 3000);
+        }
+
+        // Initialize the game when page loads
+        window.addEventListener("DOMContentLoaded", initGame);
     </script>
 </body>
 </html>
