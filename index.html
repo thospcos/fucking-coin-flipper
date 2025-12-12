@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Awesome Friends</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #ff7e5f;
+            --light: #f8f9fa;
+            --dark: #333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), #6a93cb);
+            color: white;
+            padding: 80px 0 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Friends Section */
+        .friends-intro {
+            text-align: center;
+            padding: 60px 0 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            width: 70%;
+            height: 4px;
+            background: var(--secondary);
+            bottom: -10px;
+            left: 15%;
+            border-radius: 2px;
+        }
+
+        /* Friends Grid */
+        .friends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 40px 0 80px;
+        }
+
+        .friend-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .friend-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .friend-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 5px solid var(--secondary);
+        }
+
+        .friend-info {
+            padding: 25px;
+        }
+
+        .friend-name {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .friend-desc {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .friend-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: #eef2f7;
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Selected Friend Section */
+        .selected-friend {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px auto 80px;
+            max-width: 900px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .selected-friend.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .selected-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .selected-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--secondary);
+        }
+
+        .selected-details h3 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .selected-details p {
+            color: #777;
+            font-size: 1.1rem;
+        }
+
+        .selected-content h4 {
+            color: var(--dark);
+            margin: 25px 0 15px;
+            font-size: 1.5rem;
+            border-left: 4px solid var(--secondary);
+            padding-left: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--secondary);
+            transform: scale(1.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .friends-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .selected-friend {
+                padding: 25px;
+            }
+            
+            .selected-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <h1>My Awesome Friends</h1>
+            <p class="tagline">The people who make life brighter, funnier, and more meaningful. Here's to the ones who stand by you through thick and thin.</p>
+        </div>
+    </header>
+
+    <!-- Friends Introduction -->
+    <section class="container friends-intro">
+        <h2>The Crew</h2>
+        <p>This is my amazing circle of friends. Each one brings something unique and special to my life. Click on any friend to learn more about them.</p>
+    </section>
+
+    <!-- Friends Grid -->
+    <section class="container friends-grid" id="friendsGrid">
+        <!-- Friend cards will be generated by JavaScript -->
+    </section>
+
+    <!-- Selected Friend Detail View -->
+    <section class="container">
+        <div class="selected-friend" id="selectedFriend">
+            <!-- Content will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <h3>My Friends</h3>
+            <p>Thanks for visiting this tribute to the amazing people in my life.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>&copy; <span id="currentYear"></span> My Friends Website. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample friend data
+        const friends = [
+            {
+                id: 1,
+                name: "Nguyen Minh Khoi (Sumo)",
+                photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
+                description: "the funny atheist ig yayee",
+                tags: ["Freaky", "Loyal", "Funny"],
+                detail: "Me and Minh have been friends for over a year and its been fun, we played games together, chatted together, watched shi together.. even though hes kind of racist.",
+                memories: "remember that time when minh khoi accidentally turned on camera"
+            },
+            {
+                id: 2,
+                name: "Khian Baguio (Svorn)",
+                photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
+                description: "the coolest guy ive ever met",
+                tags: ["Supportive", "Developer", "Creative"],
+                detail: "probably someone to talk you when you wanna talk about inappropiate things, ts guy is funnily racist, hes probably your guy.",
+                memories: "please svorn i need this, my finger accidentally omnied you."
+            },
+            {
+                id: 3,
+                name: "Daphne (Alstersi)",
+                photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
+                description: "The brilliant problem-solver. Always has creative solutions for any challenge.",
+                tags: ["Intelligent"],
+                detail: "i have no words, this person has a boyfriend and im kind of concerned, probably the person if you wanna chat casually with.",
+                memories: "talk about brutal accidents"
+            }
+        ];
+
+        // DOM elements
+        const friendsGrid = document.getElementById('friendsGrid');
+        const selectedFriend = document.getElementById('selectedFriend');
+        const currentYear = document.getElementById('currentYear');
+
+        // Set current year in footer
+        currentYear.textContent = new Date().getFullYear();
+
+        // Generate friend cards
+        function generateFriendCards() {
+            friendsGrid.innerHTML = '';
+            
+            friends.forEach(friend => {
+                const friendCard = document.createElement('div');
+                friendCard.className = 'friend-card';
+                friendCard.setAttribute('data-id', friend.id);
+                
+                friendCard.innerHTML = `
+                    <img src="${friend.photo}" alt="${friend.name}" class="friend-img">
+                    <div class="friend-info">
+                        <h3 class="friend-name">${friend.name}</h3>
+                        <p class="friend-desc">${friend.description}</p>
+                        <div class="friend-tags">
+                            ${friend.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                friendCard.addEventListener('click', () => showFriendDetail(friend.id));
+                friendsGrid.appendChild(friendCard);
+            });
+        }
+
+        // Show friend detail
+        function showFriendDetail(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            
+            selectedFriend.innerHTML = `
+                <div class="selected-header">
+                    <img src="${friend.photo}" alt="${friend.name}" class="selected-img">
+                    <div class="selected-details">
+                        <h3>${friend.name}</h3>
+                        <p>${friend.description}</p>
+                        <div class="friend-tags" style="margin-top: 15px;">
+                            ${friend.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <div class="selected-content">
+                    <h4>About ${friend.name.split(' ')[0]}</h4>
+                    <p>${friend.detail}</p>
+                    <h4>Favorite Memories</h4>
+                    <p>${friend.memories}</p>
+                </div>
+            `;
+            
+            selectedFriend.classList.add('active');
+            
+            // Scroll to the selected friend section
+            selectedFriend.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Initialize the page
+        function init() {
+            generateFriendCards();
+            
+            // Show first friend by default
+            showFriendDetail(1);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
